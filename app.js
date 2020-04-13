@@ -3,18 +3,12 @@ const fs = require("fs");
 const path = require("path");
 const app = express();
 const PORT = process.env.PORT || 8000;
-const noteTitle = $(".note-title");
-const noteText = $(".note-textarea");
-const saveBtn = $(".save-note");
-const $noteList = $(".list-container .list-group");
-const newNoteBtn = $(".new-note");
 
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
+app.use(express.static('public'));
 
-let dbNotes = []
-
-// When user starts, or when no page is found, defaults to the index file
+// When user starts, gets the index file
 app.get("/", function(req, res) {
     res.sendFile(path.join(__dirname, "/public/index.html"));
 });
@@ -24,14 +18,26 @@ app.get("/notes", function (req, res) {
     res.sendFile(path.join(__dirname, "/public/notes.html"));
 });
 
-// Reads the db.json file
+//Reads the db.json file
 fs.readFile('./db/db.json', (err, data) => {
     if (err) throw err;
     let dbNotes = JSON.parse(data);
     console.log(dbNotes)
-    
 });
 
+
+// gets notes
+app.get("/api/notes", function (req, res) {
+    res.sendFile(path.join(__dirname, "/db/db.json"));
+});
+
+// displays each note
+app.get("/api/notes_:id", function (req, res) {
+    for (var i = 0; i < dbNotes.length; i++) {
+        return res.json(dbNotes[i]);
+    }
+    
+});
 
 // Starts the server
 app.listen(PORT, function() {
