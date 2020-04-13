@@ -1,8 +1,13 @@
 const express = require('express');
-const app = express();
 const fs = require("fs");
 const path = require("path");
+const app = express();
 const PORT = process.env.PORT || 8000;
+const noteTitle = $(".note-title");
+const noteText = $(".note-textarea");
+const saveBtn = $(".save-note");
+const $noteList = $(".list-container .list-group");
+const newNoteBtn = $(".new-note");
 
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
