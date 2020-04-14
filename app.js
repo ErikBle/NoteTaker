@@ -8,7 +8,6 @@ app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 app.use(express.static('public'));
 
-let dbNotes = [];
 
 // When user starts, gets the index file
 app.get("/", function(req, res) {
@@ -20,13 +19,6 @@ app.get("/notes", function (req, res) {
     res.sendFile(path.join(__dirname, "/public/notes.html"));
 });
 
-//Reads the db.json file
-fs.readFile('./db/db.json', (err, data) => {
-    if (err) throw err;
-    // dbNotes = JSON.parse(data);
-});
-
-
 // gets notes from database
 app.get("/api/notes", function (req, res) {
     let notes = (fs.readFileSync("./db/db.json", function (error) {
@@ -34,14 +26,6 @@ app.get("/api/notes", function (req, res) {
     }))
     res.send(JSON.parse(notes));
 });
-
-// displays each note
-// app.get("/api/notes_:id", function (req, res) {
-//     for (var i = 0; i < dbNotes.length; i++) {
-//         return res.json(dbNotes[i]);
-//     }
-    
-// });
 
 // Adds new notes
 app.post("/api/notes", function(req, res){
@@ -59,6 +43,26 @@ app.post("/api/notes", function(req, res){
             "id": id
         }
     );
+
+    fs.writeFileSync("./db/db.json", JSON.stringify(notes), function (error) {
+        if (error) throw error;
+    })
+
+    res.send(notes);
+})
+
+// Deletes selected note (selected from unique id)
+app.delete("/api/notes/:id", function(req,res){
+    const goodbyeID = req.params.id
+    const notes = JSON.parse((fs.readFileSync("./db/db.json", function (error) {
+        if (error) throw error ;
+    })))
+
+    for (var i = 0; i < notes.length; i++) {
+        if (notes[i].id == goodbyeID) {
+            notes.splice(i, 1);
+        }
+    }
 
     fs.writeFileSync("./db/db.json", JSON.stringify(notes), function (error) {
         if (error) throw error;
