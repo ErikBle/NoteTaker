@@ -8,6 +8,8 @@ app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 app.use(express.static('public'));
 
+let dbNotes = [];
+
 // When user starts, gets the index file
 app.get("/", function(req, res) {
     res.sendFile(path.join(__dirname, "/public/index.html"));
@@ -21,23 +23,49 @@ app.get("/notes", function (req, res) {
 //Reads the db.json file
 fs.readFile('./db/db.json', (err, data) => {
     if (err) throw err;
-    let dbNotes = JSON.parse(data);
-    console.log(dbNotes)
+    // dbNotes = JSON.parse(data);
 });
 
 
-// gets notes
+// gets notes from database
 app.get("/api/notes", function (req, res) {
-    res.sendFile(path.join(__dirname, "/db/db.json"));
+    let notes = (fs.readFileSync("./db/db.json", function (error) {
+        if (error) throw error ;
+    }))
+    res.send(JSON.parse(notes));
 });
 
 // displays each note
-app.get("/api/notes_:id", function (req, res) {
-    for (var i = 0; i < dbNotes.length; i++) {
-        return res.json(dbNotes[i]);
-    }
+// app.get("/api/notes_:id", function (req, res) {
+//     for (var i = 0; i < dbNotes.length; i++) {
+//         return res.json(dbNotes[i]);
+//     }
     
-});
+// });
+
+// Adds new notes
+app.post("/api/notes", function(req, res){
+    const title = req.body.title;
+    const body = req.body.text;
+    const id = Math.random();
+    const notes = JSON.parse((fs.readFileSync("./db/db.json", function (error) {
+        if (error) throw error ;
+    })))
+    
+    notes.push(
+        {
+            "title": title,
+            "text": body,
+            "id": id
+        }
+    );
+
+    fs.writeFileSync("./db/db.json", JSON.stringify(notes), function (error) {
+        if (error) throw error;
+    })
+
+    res.send(notes);
+})
 
 // Starts the server
 app.listen(PORT, function() {
