@@ -9,12 +9,12 @@ app.use(express.json());
 app.use(express.static('public'));
 
 // When user goes to the notes section, returns the notes.html file
-app.get("/notes", function (res) {
+app.get("/notes", function (req, res) {
     res.sendFile(path.join(__dirname, "/public/notes.html"));
 });
 
 // gets notes from database
-app.get("/api/notes", function (res) {
+app.get("/api/notes", function (req, res) {
     let notes = (fs.readFileSync("./db/db.json", function (error) {
         if (error) throw error ;
     }))
@@ -22,7 +22,7 @@ app.get("/api/notes", function (res) {
 });
 
 // When user starts, gets the index file or defaults to the index if 404
-app.get("*", function(res) {
+app.get("*", function(req, res) {
     res.sendFile(path.join(__dirname, "/public/index.html"));
 });
 
