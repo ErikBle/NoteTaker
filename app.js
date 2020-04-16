@@ -8,24 +8,24 @@ app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 app.use(express.static('public'));
 
-
-// When user starts, gets the index file
-app.get("/", function(req, res) {
-    res.sendFile(path.join(__dirname, "/public/index.html"));
-});
-
 // When user goes to the notes section, returns the notes.html file
-app.get("/notes", function (req, res) {
+app.get("/notes", function (res) {
     res.sendFile(path.join(__dirname, "/public/notes.html"));
 });
 
 // gets notes from database
-app.get("/api/notes", function (req, res) {
+app.get("/api/notes", function (res) {
     let notes = (fs.readFileSync("./db/db.json", function (error) {
         if (error) throw error ;
     }))
     res.send(JSON.parse(notes));
 });
+
+// When user starts, gets the index file or defaults to the index if 404
+app.get("*", function(res) {
+    res.sendFile(path.join(__dirname, "/public/index.html"));
+});
+
 
 // Adds new notes
 app.post("/api/notes", function(req, res){
