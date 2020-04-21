@@ -14,5 +14,5 @@ The notes are saved and can be deleted when you are done.
 ## Link:
 Deployed Link: https://notetaker-2888.herokuapp.com/
 
-<img src="https://imgur.com/SzLUfzY">
-<img src="https://imgur.com/BH88tZm">
+<img src="https://imgur.com/SzLUfzY.jpg">
+<img src="https://imgur.com/BH88tZm.jpg">
